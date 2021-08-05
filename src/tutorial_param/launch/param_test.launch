@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="tutorial_param" type="param_test" name="param_test" output="screen" />
+    <param name="text" value="parameter test" type="string" />
+    <param name="repeat_times" value="5" type="int" />
+    <param name="frecency" value="0.1" type="double"/>
+</launch>

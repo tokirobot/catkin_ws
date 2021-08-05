@@ -1,0 +1,9 @@
+<launch>
+<!--type...node name   pkg...package name    name...node run name  output...ROS_INFO output -->
+  <node pkg="motor_control" name="motor_test" type="motor_test" output="screen"/>
+  <node name="joy_node" pkg="joy" type="joy_node" />
+  <!--node pkg="seiral_test" name="serial_test_joy" type="serial_test_joy"/-->
+  <node pkg="serial_test" name="serial_test" type="serial_test"/>
+  
+
+</launch>

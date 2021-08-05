@@ -1,0 +1,20 @@
+<?xml version ="1.0"?>
+
+<launch>
+<node pkg="tutorial_param" type="param_test" name="param_test1" output="screen">
+    <remap from="text" to="param_test1/text"/>
+    <remap from="repeat_times" to="param_test1/repeat_times"/>
+    <remap from="frequency" to="param_test1/frequency"/>
+    <param name="text" value="Parameter test1" type="string"/>
+    <param name="repeat_times" value="5" type="int"/>
+    <param name="frequency" value="1.0" type="double"/>
+</node>
+<node pkg="tutorial_param" type="param_test" name="param_test2" output="screen">
+    <remap from="text" to="param_test2/text"/>
+    <remap from="repeat_times" to="param_test2/repeat_times"/>
+    <remap from="frequency" to="param_test2/frequency"/>
+    <param name="text" value="Parameter test2" type="string"/>
+    <param name="repeat_times" value="10" type="int"/>
+    <param name="frequency" value="1.0" type="double"/>
+</node>
+</launch>
