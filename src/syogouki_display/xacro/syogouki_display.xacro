@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot name="test_robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+
+  <xacro:include filename="$(find syogouki_display)/xacro/body/main_body.xacro"/>
+  <xacro:include filename="$(find syogouki_display)/xacro/body/flipper.xacro"/>
+  <xacro:include filename="$(find syogouki_display)/xacro/manipulator/main_frame.xacro"/>
+
+
+  <link name="base_link"/>
+  <xacro:main_body                        parent="base_link" />
+
+  <xacro:flipper    LR="left"  FR="front" parent="main_body"/>
+  <xacro:flipper    LR="left"  FR="rear"  parent="main_body" />
+  <xacro:flipper    LR="right" FR="front" parent="main_body"/>
+  <xacro:flipper    LR="right" FR="rear"  parent="main_body" />
+
+  <xacro:main_frame                       parent="main_body" />
+
+</robot>

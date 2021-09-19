@@ -1,0 +1,27 @@
+
+<launch>
+  <!-- arguments  arg means hennsuu osoraku-->
+  <arg name="model" default="$(find syogouki_display)/xacro/syogouki_display.xacro"/>
+  <arg name="gui" default="true" />
+  <arg name="rvizsetting" default="$(find syogouki_display)/rviz/setting.rviz"/>
+
+  <!--arg name="length0" default="1.0" /-->
+
+  <!-- prameters -->
+  <!--param name="robot_description" command="$(find xacro)/xacro.py '$(arg model)'"/-->
+  <param name="use_gui" value="$(arg gui)"/>
+  <!--robot description is needed to decide what 3dmodel(xacro or urdf )you use
+  model is defined at arg name model code-->
+  <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+  <!-- nodes -->
+  <!--node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" /-->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <!--jsk plugin-->
+  <node name="jsk_visual" pkg="syogouki_display" type="jsk_visual" output="screen"/>
+  <!--user defined node-->
+  <node name="robot_state" pkg="syogouki_display" type="robot_state"/>
+  <!-- rviz -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizsetting)" required="true"/>
+
+
+</launch>

@@ -49,6 +49,7 @@ int chardatasize = 0;
 //transmit data inttochar floattochar 
 //receive data  buf_pub
 
+
 void float_callback(const std_msgs::Float32MultiArray &serial_msg)
 {
     if (floatflag)
@@ -85,21 +86,28 @@ void int_callback(const std_msgs::Int32MultiArray &serial_msg)
     //type *variable = new type;
     //new is used when you want to decide number of array elements in code
     //originally array index must be decided in constant
+
     inttochar = new char[intdatasize * 4 + 6];
+    //inttochar=new char[intdatasize+3];
+
     inttochar[0] = 'i';
+
     *(int *)(&inttochar[1]) = intdatasize;
+    //*(int*)inttochar[1]=intdatasize;
     //memcpy(&inttochar[1], &datasize, 4);
+
     for (int i = 0; i < intdatasize; i++)
     {
         *(int *)(&inttochar[i * 4 + 5]) = serial_msg.data[i];
+        //*(int *)inttochar[i + 2] = serial_msg.data[i];
         //memcpy(&inttochar[i * 4 + 5], &serial_msg.data[i], 4);
     }
     inttochar[intdatasize * 4 + 5] = endmsg;
+   // inttochar[intdatasize+2]=endmsg;
 
     intflag = true;
-   
-    
-
+   // std::cout<<inttochar;
+    //std::cout<<intdatasize;
 }
 
 
@@ -142,7 +150,7 @@ int main(int argc, char **argv)
 
     // Parameter
     ros::NodeHandle arg_n("~");
-    std::string port_name = "/dev/ttyACM0";
+    std::string port_name = "/dev/ttyUSB0";
     int sub_loop_rate = 200;
     arg_n.getParam("port", port_name);
     arg_n.getParam("baudrate", BAUDRATE);
@@ -261,6 +269,7 @@ int main(int argc, char **argv)
         else if (intflag)
         {
             rec = write(fd1, inttochar, intdatasize * 4 + 6);
+            //rec = write(fd1, inttochar, intdatasize + 3);
             if (rec < 0)
             {
                 ROS_ERROR_ONCE("Serial Fail: cound not write int");

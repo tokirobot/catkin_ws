@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     //Subscriber
     ros::Subscriber serial_sub = n.subscribe("Serial_out", 100, serial_callback); 
 
-    char device_name[]="/dev/ttyACM0";
+    char device_name[]="/dev/ttyUSB0";
     fd1=open_serial(device_name);
     if(fd1<0){
         ROS_ERROR("Serial Fail: cound not open %s", device_name);
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
         int recv_data=read(fd1, buf, sizeof(buf));
         
         if(recv_data>0){
-            printf("I received :%s\n",buf[0]);
+            //printf("I received :%s\n",buf[0]);
             
             std_msgs::String serial_msg;
             serial_msg.data=buf;

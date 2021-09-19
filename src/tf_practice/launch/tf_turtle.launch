@@ -1,0 +1,19 @@
+<launch>
+<!--type...node name   pkg...package name    name...node run name  output...ROS_INFO output -->
+
+   <!-- Turtlesim Node -->
+<node pkg="turtlesim" type="turtlesim_node" name="sim"/>
+    <!-- turtle_teleop_key Node -->
+<node pkg="turtlesim" type="turtle_teleop_key" name="teleop" output="screen"  />
+    <!-- set scales launch-prefix="xterm -font r14 -bg darkblue -geometry 113x30+503+80 -e" required="true"-->
+<param name="scale_linear" value="2.5" type="double"/>
+<param name="scale_angular" value="4.0" type="double"/>
+
+    <!-- tf broadcaster nodes -->
+<node pkg="tf_practice" type="tf_broadcaster" args="/turtle1" name="tf_broadcaster" output="screen"/>
+<node pkg="tf_practice" type="tf_broadcaster" args="/turtle2" name="tf_broadcaster2" />
+
+    <!-- tf listener nodes -->
+<node pkg="tf_practice" type="tf_listener" name="tf_listener" output="screen"/>
+
+</launch>

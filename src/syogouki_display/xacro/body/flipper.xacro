@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <material name="flipper_colors">
+    <color rgba="0.02 0.52 0.86 2.0"/>
+  </material>
+  <material name="flipper_belt_colors">
+    <color rgba="0.224 0.72 0.556 2.0"/>
+  </material>
+
+   <!--flipper depiction-->
+ <xacro:macro name="flipper" params="LR FR parent">
+    <!--LR: left or right, FR: front or rear-->
+    <xacro:if value="${FR=='front'}">
+      <xacro:property name="fr" value="0.07"/>
+      <xacro:property name="fr_yaw" value="-1.0"/>
+      <xacro:property name="fr_grid_yaw" value="-2.0"/>
+    </xacro:if>
+    <xacro:if value="${FR=='rear'}">
+      <xacro:property name="fr" value="-0.07"/>
+      <xacro:property name="fr_yaw" value="1.0"/>
+      <xacro:property name="fr_grid_yaw" value="0.0"/>
+    </xacro:if>
+    <xacro:if value="${LR=='left'}">
+      <xacro:property name="lr" value="1.6"/>
+    </xacro:if>
+    <xacro:if value="${LR=='right'}">
+      <xacro:property name="lr" value="-1.6"/>
+    </xacro:if>
+
+   <joint name="${LR}_${FR}" type="revolute">
+      <parent link="${parent}"/>
+      <child  link="${LR}_${FR}"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="1000" lower="${-pi*3/4}" upper="${pi*3/4}" velocity="0.5"/>
+      <origin xyz="${lr} ${fr_yaw} 0.5" rpy="0 0 0"/>
+    </joint>
+
+
+    <link name="${LR}_${FR}">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/body/flipper_without_belt.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+         <origin xyz="0 ${fr_grid_yaw} 0" rpy="0 0 0"/>
+        <material name="flipper_colors"/>
+      </visual>
+    </link>
+
+
+
+  </xacro:macro>
+</robot>
+

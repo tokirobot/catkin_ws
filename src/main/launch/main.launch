@@ -1,0 +1,12 @@
+<launch>
+<!--type...node name   pkg...package name    name...node run name  output...ROS_INFO output -->
+
+  <node pkg="main" name="main" type="main" output="screen"/>
+  <node pkg="em_mng" name="flipper_async" type="flipper_async" output="screen"/>
+  <node pkg="em_mng" name="flipper_sync" type="flipper_sync" output="screen"/>
+  <node pkg="em_mng" name="Dynamixel_arm" type="Dynamixel_arm" />
+  <node name="joy_node" pkg="joy" type="joy_node" />
+  <!--node pkg="seiral_test" name="serial_test_joy" type="serial_test_joy"/-->
+
+
+</launch>

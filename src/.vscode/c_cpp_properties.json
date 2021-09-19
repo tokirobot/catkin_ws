@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "",
+        "limitSymbolsToIncludedHeaders": true
+      },
+      "includePath": [
+        "/home/toki/catkin_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/toki/catkin_ws/src/dynamixel_manager/include/**",
+        "/home/toki/catkin_ws/src/dynamixel_mng/include/**",
+        "/home/toki/catkin_ws/src/DynamixelSDK/ros/dynamixel_sdk/include/**",
+        "/home/toki/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_controllers/include/**",
+        "/home/toki/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_operators/include/**",
+        "/home/toki/catkin_ws/src/dynamixel-workbench/dynamixel_workbench_toolbox/include/**",
+        "/home/toki/catkin_ws/src/em_mng/include/**",
+        "/home/toki/catkin_ws/src/joy_sub/include/**",
+        "/home/toki/catkin_ws/src/joy_turtle/include/**",
+        "/home/toki/catkin_ws/src/main/include/**",
+        "/home/toki/catkin_ws/src/motor_control/include/**",
+        "/home/toki/catkin_ws/src/serial_test/include/**",
+        "/home/toki/catkin_ws/src/syogouki_display/include/**",
+        "/home/toki/catkin_ws/src/tutorial_param/include/**",
+        "/home/toki/catkin_ws/src/tutorial_service/include/**",
+        "/home/toki/catkin_ws/src/tutorial_service2/include/**",
+        "/home/toki/catkin_ws/src/tutorial_topic/include/**",
+        "/home/toki/catkin_ws/src/urdf_pra/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS"
+    }
+  ],
+  "version": 4
+}

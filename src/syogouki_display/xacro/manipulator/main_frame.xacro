@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <material name="table_colors">
+    <color rgba="0.9 0.9 0.9 2.0"/>
+  </material>
+
+  <material name="gear_colors">
+    <color rgba="0.9 0.9 0.9 2.0"/>
+  </material>
+
+  <material name="link_colors">
+    <color rgba="0.7 0.7 0.7 2.0"/>
+  </material>
+
+  <material name="hands_colors">
+    <color rgba="0.2 0.211 0.192 2.0"/>
+  </material>
+
+
+
+     <!--main body belt-->
+ <xacro:macro name="main_frame" params="parent">
+    <!--LR: left or right-->
+    
+    <joint name="2table" type="fixed">
+      <parent link="${parent}"/>
+      <child  link="link_table"/>
+      <origin xyz="0 0 ${90*0.01}" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="turn_table" type="revolute">
+      <parent link="link_table"/>
+      <child  link="link_turn"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <axis xyz="0 0 1"/>
+      <origin xyz="0 -0.8 0.6" rpy="0 0 0"/>
+      <!--origin xyz="${0.154*0.001} ${-10.0*0.1} 0.7}" rpy="0 0 0"/>-->
+    </joint>
+
+
+    <joint name="first_link" type="revolute">
+      <parent link="link_turn"/>
+      <child  link="link_first_link"/>
+      <axis xyz="-1 0 0"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 0 0.45" rpy="0 0 0"/>
+      <!--origin xyz="${0.001*2.617} ${0.001*4.552} ${0.001*54}" rpy="0 0 0"/>-->
+    </joint>
+
+
+    <joint name="second_link" type="revolute">
+      <parent link="link_first_link"/>
+      <child  link="link_second_link"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 2.4 0.5" rpy="0 0 0"/>
+    </joint>
+
+
+    <joint name="hand_base" type="fixed">
+      <parent link="link_second_link"/>
+      <child  link="link_hand_base"/>
+      <origin xyz="0 -2.5 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="hand_roll" type="revolute">
+      <!--parent link="link_hand_pitch"/-->
+      <!--child  link="link_hand_roll"/-->
+      <parent link="link_hand_base"/>
+      <child  link="link_hand_roll"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+
+
+    <joint name="hand_yaw" type="revolute">
+      <!--parent link="link_hand_base"/>
+      <child  link="link_hand_yaw"/>-->
+      <parent link="link_hand_roll"/>
+      <child  link="link_hand_yaw"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 -0.8 0" rpy="0 0 0"/>
+    </joint>
+
+
+
+    <joint name="hand_pitch" type="revolute">
+      <parent link="link_hand_yaw"/>
+      <child  link="link_hand_pitch"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 -0.3 ${0.001*13.778}" rpy="0 0 0"/>
+    </joint>
+
+
+
+
+    <link name="link_table">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/table/tables.stl" scale="0.01 0.01 0.01"/>
+        </geometry>
+        <material name="table_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_turn">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/table/arm_base.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <material name="gear_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_first_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/link/first_link.stl" scale="0.01 0.01 0.01"/>
+        </geometry>
+        <origin xyz="0 0 -0.4" rpy="0 0 0"/>
+        <material name="link_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_second_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/link/second_link.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="link_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_hand_base">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/hands/hand_base.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="hands_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_hand_roll">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/hands/hand_roll.stl" scale="0.01 0.01 0.01"/>
+        </geometry>
+        <material name="hands_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_hand_yaw">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/hands/hand_yaw.stl" scale="0.01 0.01 0.01"/>
+        </geometry>
+        <material name="hands_colors"/>
+      </visual>
+    </link>
+
+
+    <link name="link_hand_pitch">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/manipulator/hands/hand_pitch.stl" scale="0.01 0.01 0.01"/>
+        </geometry>
+        <material name="hands_colors"/>
+      </visual>
+    </link>
+
+
+
+ </xacro:macro>
+</robot>

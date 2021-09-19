@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <material name="body_colors">
+    <color rgba="0.02 0.52 0.86 2.0"/>
+  </material>
+
+  <xacro:macro name="main_body" params="parent">
+
+  
+      <xacro:property name="val" value="1000"/>
+
+
+    <joint name="xprismatic" type="prismatic">
+      <parent link="${parent}"/>
+      <child  link="main_body_xprismatic"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="10000.0" lower="${-val}" upper="${val}" velocity="0.5"/>
+      <origin xyz="0 0 ${(66.169+5+10)*0.001}" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="yprismatic" type="prismatic">
+      <parent link="main_body_xprismatic"/>
+      <child  link="main_body_yprismatic"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="10000.0" lower="${-val}" upper="${val}" velocity="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="xaxis" type="revolute">
+      <parent link="main_body_yprismatic"/>
+      <child  link="main_body_xaxis"/>
+      <axis xyz="1 0 0"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="yaxis" type="revolute">
+      <parent link="main_body_xaxis"/>
+      <child  link="main_body_yaxis"/>
+      <axis xyz="0 1 0"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+    
+    <joint name="zaxis" type="revolute">
+      <parent link="main_body_yaxis"/>
+      <child  link="main_body_zaxis"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="10000.0" lower="${-pi}" upper="${pi}" velocity="0.5"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="2main_body" type="fixed">
+      <parent link="main_body_zaxis"/>
+      <child  link="main_body"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <link name="main_body_xprismatic"/>
+    <link name="main_body_yprismatic"/>
+    <link name="main_body_xaxis"/>
+    <link name="main_body_yaxis"/>
+    <link name="main_body_zaxis"/>
+
+    <link name="main_body">
+      <visual>
+        <geometry>
+          <mesh filename="package://syogouki_display/mesh/body/main_body.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="body_colors"/>
+      </visual>
+    </link>
+
+  </xacro:macro>
+</robot>
+    
+
+      
