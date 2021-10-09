@@ -43,6 +43,8 @@ int sleeptime = 5000; //us
 char *floattochar;
 char *inttochar;
 char *chartochar;
+
+int getint[32];
 int floatdatasize = 0;
 int intdatasize = 0;
 int chardatasize = 0;
@@ -81,6 +83,7 @@ void int_callback(const std_msgs::Int32MultiArray &serial_msg)
         usleep(sleeptime);
         intflag == false;
     }
+
     delete[] inttochar;
     intdatasize = serial_msg.data.size();
     //type *variable = new type;
@@ -102,12 +105,46 @@ void int_callback(const std_msgs::Int32MultiArray &serial_msg)
         //*(int *)inttochar[i + 2] = serial_msg.data[i];
         //memcpy(&inttochar[i * 4 + 5], &serial_msg.data[i], 4);
     }
+   // memcpy(&getint[0], &serial_msg.data[0],4);
+   // memcpy(&getint[1], &serial_msg.data[1],4);
+    memcpy(&getint[0], &inttochar[5],4);
+    memcpy(&getint[1], &inttochar[9],4);  
+
+
+
+    //ROS_INFO("serial_msg.data.size();:%d",serial_msg.data.size());
+    
+
     inttochar[intdatasize * 4 + 5] = endmsg;
    // inttochar[intdatasize+2]=endmsg;
+
+   
 
     intflag = true;
    // std::cout<<inttochar;
     //std::cout<<intdatasize;
+
+
+    ROS_INFO("inttochar[0]:%c",inttochar[0]);
+    ROS_INFO("inttochar[1]:%d",inttochar[1]);
+    ROS_INFO("inttochar[2]:%d",inttochar[2]);
+    ROS_INFO("inttochar[3]:%d",inttochar[3]);
+    ROS_INFO("inttochar[4]:%d",inttochar[4]);
+    ROS_INFO("inttochar[5]:%d",inttochar[5]);
+    ROS_INFO("inttochar[6]:%d",inttochar[6]);
+    ROS_INFO("inttochar[7]:%d",inttochar[7]);
+    ROS_INFO("inttochar[8]:%d",inttochar[8]);
+    ROS_INFO("inttochar[9]:%d",inttochar[9]);
+    ROS_INFO("inttochar[10]:%d",inttochar[10]);
+    ROS_INFO("inttochar[11]:%d",inttochar[11]);
+    ROS_INFO("inttochar[12]:%d",inttochar[12]);
+    ROS_INFO("inttochar[13]:%d",inttochar[13]);
+
+    ROS_INFO("serial_msg.data[0]:%d",serial_msg.data[0]);
+    ROS_INFO("serial_msg.data[1]:%d",serial_msg.data[1]);
+    ROS_INFO("getint[0]:%d",getint[0]);
+    ROS_INFO("getint[1]:%d",getint[1]);
+    ROS_INFO("sizeof inttochar:%zu",sizeof(inttochar)/sizeof(inttochar[0]));
 }
 
 
@@ -150,7 +187,7 @@ int main(int argc, char **argv)
 
     // Parameter
     ros::NodeHandle arg_n("~");
-    std::string port_name = "/dev/ttyUSB0";
+    std::string port_name = "/dev/ttyACM0";
     int sub_loop_rate = 200;
     arg_n.getParam("port", port_name);
     arg_n.getParam("baudrate", BAUDRATE);
@@ -257,6 +294,9 @@ int main(int argc, char **argv)
 
         // publish
         //second hikisuu is transmit data
+
+
+        //ROS_INFO("inttochar[0]:%s",inttochar[0]);
         if (floatflag)
         {
             rec = write(fd1, floattochar, floatdatasize * 4 + 6);
@@ -270,6 +310,7 @@ int main(int argc, char **argv)
         {
             rec = write(fd1, inttochar, intdatasize * 4 + 6);
             //rec = write(fd1, inttochar, intdatasize + 3);
+
             if (rec < 0)
             {
                 ROS_ERROR_ONCE("Serial Fail: cound not write int");

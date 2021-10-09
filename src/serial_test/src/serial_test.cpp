@@ -1,5 +1,8 @@
 #include "ros/ros.h"
 #include "std_msgs/String.h"
+#include "std_msgs/Float32MultiArray.h"
+#include "std_msgs/Int32MultiArray.h"
+#include "stdlib.h"
 #include <string>
 #include <unistd.h>
 #include <fcntl.h>
@@ -26,12 +29,33 @@ int open_serial(const char *device_name){
     return fd1;
 }
 
-int fd1;
+int fd1=0;
+char endmsg = '\n';
+char *inttochar;
+int intdatasize = 0;
+
 //you have to send data type char!
 //c_str() convert string into char
 void serial_callback(const std_msgs::String& serial_msg){
     //serial_msg.data==uart Transmission
-    int rec=write(fd1,serial_msg.data.c_str(),serial_msg.data.size());
+
+
+    delete[] inttochar;
+    intdatasize = serial_msg.data.size();
+    inttochar = new char[intdatasize * 4 + 6];
+    inttochar[0] = 'i';
+    *(int *)(&inttochar[1]) = intdatasize;
+    for (int i = 0; i < intdatasize; i++)
+    {
+        *(int *)(&inttochar[i * 4 + 5]) = serial_msg.data[i];
+        //*(int *)inttochar[i + 2] = serial_msg.data[i];
+        //memcpy(&inttochar[i * 4 + 5], &serial_msg.data[i], 4);
+    }
+    inttochar[intdatasize * 4 + 5] = endmsg;        
+
+    //int rec=write(fd1,serial_msg.data.c_str(),serial_msg.data.size());
+    int rec = write(fd1, inttochar, intdatasize * 4 + 6);
+
     if(rec>=0)printf("send:%s\n",serial_msg.data.c_str());
     else{
         ROS_ERROR_ONCE("Serial Fail: cound not write");
@@ -40,7 +64,7 @@ void serial_callback(const std_msgs::String& serial_msg){
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "s4_comport_serialport");
+    ros::init(argc, argv, "serial_test");
     ros::NodeHandle n;
 
     //Publisher

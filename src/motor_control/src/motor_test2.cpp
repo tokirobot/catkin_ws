@@ -23,7 +23,7 @@ int stopcmd=0;
 void motorjoycallback(const sensor_msgs::Joy &joy_msg){
     //int i=0;
     //i=joy_msg.buttons[14];
-  
+    
        
        // stp_c.data[0]=10;
         //stp_c.data[1]=joy_msg.buttons[0];

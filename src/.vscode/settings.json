@@ -4,7 +4,11 @@
         "/opt/ros/melodic/lib/python2.7/dist-packages"
     ],
     "files.associations": {
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "new": "cpp"
     },
     "python.analysis.extraPaths": [
         "/home/toki/catkin_ws/devel/lib/python2.7/dist-packages",
