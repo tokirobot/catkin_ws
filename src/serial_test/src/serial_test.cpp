@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     //Subscriber
     ros::Subscriber serial_sub = n.subscribe("Serial_out", 100, serial_callback); 
 
-    char device_name[]="/dev/ttyUSB0";
+    char device_name[]="/dev/ttyACM0";
     fd1=open_serial(device_name);
     if(fd1<0){
         ROS_ERROR("Serial Fail: cound not open %s", device_name);

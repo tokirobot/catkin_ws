@@ -27,6 +27,7 @@ int open_serial(const char *device_name)
     //non blocking
     conf_tio.c_cc[VMIN] = 0;
     conf_tio.c_cc[VTIME] = 0;
+    conf_tio.c_oflag&=~(ONLCR);
     //store configuration
     tcsetattr(fd1, TCSANOW, &conf_tio);
     return fd1;
@@ -109,7 +110,8 @@ void int_callback(const std_msgs::Int32MultiArray &serial_msg)
    // memcpy(&getint[1], &serial_msg.data[1],4);
     memcpy(&getint[0], &inttochar[5],4);
     memcpy(&getint[1], &inttochar[9],4);  
-
+    memcpy(&getint[2], &inttochar[13],4);
+    memcpy(&getint[3], &inttochar[17],4); 
 
 
     //ROS_INFO("serial_msg.data.size();:%d",serial_msg.data.size());
@@ -125,7 +127,7 @@ void int_callback(const std_msgs::Int32MultiArray &serial_msg)
     //std::cout<<intdatasize;
 
 
-    ROS_INFO("inttochar[0]:%c",inttochar[0]);
+    /*ROS_INFO("inttochar[0]:%c",inttochar[0]);
     ROS_INFO("inttochar[1]:%d",inttochar[1]);
     ROS_INFO("inttochar[2]:%d",inttochar[2]);
     ROS_INFO("inttochar[3]:%d",inttochar[3]);
@@ -145,6 +147,8 @@ void int_callback(const std_msgs::Int32MultiArray &serial_msg)
     ROS_INFO("getint[0]:%d",getint[0]);
     ROS_INFO("getint[1]:%d",getint[1]);
     ROS_INFO("sizeof inttochar:%zu",sizeof(inttochar)/sizeof(inttochar[0]));
+    */
+     ROS_INFO(" getint[3]:%d", getint[3]);
 }
 
 
@@ -187,8 +191,8 @@ int main(int argc, char **argv)
 
     // Parameter
     ros::NodeHandle arg_n("~");
-    std::string port_name = "/dev/ttyACM0";
-    int sub_loop_rate = 200;
+    std::string port_name = "/dev/ttyUSB0";
+    int sub_loop_rate = 100;
     arg_n.getParam("port", port_name);
     arg_n.getParam("baudrate", BAUDRATE);
     arg_n.getParam("looprate", sub_loop_rate);

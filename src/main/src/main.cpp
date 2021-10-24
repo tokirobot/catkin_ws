@@ -35,8 +35,10 @@ struct joy_but
     int l2;
     int r2;
 
-    int il_stick;
-    int ir_stick;
+    float l_stick_ver;
+    float l_stick_hori;    
+    float r_stick_ver;
+    float r_stick_hori;
 
     float l_stick;
     float r_stick;
@@ -84,13 +86,15 @@ int pairbutton=0;
 int startbutton=0;
 int speedmode=1;
 int controlmode=1;
+float crawlerspeed=0;
+
 int duty=0;
 int default_speed=300;
 
 
 //pid control speed command
 int ref_speed=0;
-
+int currentmode=0;
 int setmotorspeed(int default_speed, int speedmode, int button_state){
     return default_speed*speedmode*button_state;
 }
@@ -101,7 +105,6 @@ void joy_callback(const sensor_msgs::Joy &joy_msg){
 
     joy_but joy;
     pairbutton=joy_msg.buttons[10];
-
 
     startbutton=joy_msg.buttons[9];
 
@@ -116,6 +119,8 @@ void joy_callback(const sensor_msgs::Joy &joy_msg){
         controlmode=1;
     } 
 
+
+
     joy.cro_n=joy_msg.buttons[13];
     joy.cro_s=joy_msg.buttons[14];   
     joy.cro_e=joy_msg.buttons[15];
@@ -126,10 +131,24 @@ void joy_callback(const sensor_msgs::Joy &joy_msg){
     joy.l2 = joy_msg.buttons[6];
     joy.r2 = joy_msg.buttons[7];
 
-    joy.il_stick = (int)joy_msg.axes[1];
-    joy.ir_stick = (int)joy_msg.axes[4];
 
-         if(joy.cro_n==1)
+    joy.cross=joy_msg.buttons[0];   
+    joy.circle=joy_msg.buttons[1];
+    joy.tryangle=joy_msg.buttons[2];
+    joy.square=joy_msg.buttons[3];
+
+
+    //joy.il_stick = (int)joy_msg.axes[1];
+    //joy.ir_stick = (int)joy_msg.axes[4];
+    //joy.l_stick = joy_msg.axes[1];
+   // joy.r_stick = joy_msg.axes[4];
+   joy.l_stick_ver=joy_msg.axes[1];
+   joy.l_stick_hori=joy_msg.axes[0];
+   joy.r_stick_ver=joy_msg.axes[4];
+   joy.r_stick_hori=joy_msg.axes[3]; 
+
+
+        /* if(joy.cro_n==1)
          motor_command.data[0]=FRONT;
          else if(joy.cro_s==1)
          motor_command.data[0]=BACK;
@@ -138,12 +157,38 @@ void joy_callback(const sensor_msgs::Joy &joy_msg){
          else if(joy.cro_w==1)
          motor_command.data[0]=LEFT;   
          else 
-         motor_command.data[0]=STOP; 
+         motor_command.data[0]=STOP; */
+
+     if(joy.l_stick_ver>0.15){
+     motor_command.data[0]=FRONT;
+     crawlerspeed=joy.l_stick_ver;
+     }
+     else if(joy.l_stick_ver<-0.15){
+     motor_command.data[0]=BACK;
+     crawlerspeed=joy.l_stick_ver*(-1);
+     }
+     else if(joy.l_stick_hori<-0.15){
+     motor_command.data[0]=RIGHT; 
+     crawlerspeed=joy.l_stick_hori*(-1);     
+     }
+     else if(joy.l_stick_hori>0.15){
+     motor_command.data[0]=LEFT;
+     crawlerspeed=joy.l_stick_hori;     
+     }
+     else {
+     motor_command.data[0]=STOP;  
+     crawlerspeed=0;        
+     }
+
 
 
     switch (controlmode)
     {
     case Asynchronous:
+
+
+        currentmode=Asynchronous;
+
         if(joy.l1==1)
         motor_command.data[1]=LFU;
         else if(joy.l2==1)
@@ -153,41 +198,61 @@ void joy_callback(const sensor_msgs::Joy &joy_msg){
         else if(joy.r2==1)
         motor_command.data[1]=RFD;
 
-        else if(joy.il_stick==1)
+
+        else if(joy.cro_n==1)
         motor_command.data[1]=LBU;    
-        else if(joy.ir_stick==1)
+        else if(joy.tryangle==1)
         motor_command.data[1]=RBU;
-        else if(joy.il_stick==-1)
+        else if(joy.cro_s==1)
         motor_command.data[1]=LBD;    
-        else if(joy.ir_stick==-1)
+        else if(joy.cross==1)
         motor_command.data[1]=RBD;
+
+        
+
+        
 
         else 
         motor_command.data[1]=STOP;
         break;
 
     case Synchronous:
+
+        //motor_command.data[3]=Synchronous;
+        currentmode=Synchronous;
         if(joy.l1==1 || joy.r1==1)
         motor_command.data[1]=LRFU;
         else if(joy.l2==1 || joy.r2==1)
         motor_command.data[1]=LRFD;
 
-        else if(joy.il_stick==1 || joy.ir_stick==1)
+        else if(joy.cro_n==1 || joy.tryangle==1)
         motor_command.data[1]=LRBU;    
-        else if(joy.il_stick==-1 || joy.ir_stick==-1)
+        else if(joy.cro_s==1 || joy.cross==1)
         motor_command.data[1]=LRBD;
+
+        
+
 
         else 
         motor_command.data[1]=STOP; 
         break;
 
     case DynamixelArm:
+    motor_command.data[3]=DynamixelArm;
         /* code */
         break;
     //default:
        // break;
     }
-    motor_command.data[2]=DEFAULT_SPEED*speedmode;
+
+
+
+    motor_command.data[2]=DEFAULT_SPEED*speedmode;//flipper speed
+    motor_command.data[3]=DEFAULT_SPEED*speedmode*crawlerspeed; //crawler speed
+
+
+
+
 
 
 
@@ -211,14 +276,14 @@ int main(int argc, char** argv)
     ros::Publisher Flipper_Synchronous = nh.advertise<std_msgs::Int32MultiArray>("Syn_com",10);
     ros::Publisher Flipper_Asynchronous = nh.advertise<std_msgs::Int32MultiArray>("Asyn_com",10);
     ros::Publisher Dynamixel_Arm = nh.advertise<std_msgs::Int32MultiArray>("Dyna_com",10);
-    
+    ros::Publisher Opencr_back_flipper = nh.advertise<std_msgs::Int32MultiArray>("opencr_fli",10);
     //in rviz , you can see current robot mode , state , and unko
     ros::Publisher JSK_pub = nh.advertise<std_msgs::Int32MultiArray>("operation_mode",10);
 
 
     //motor_command.data.resize(4);
-    motor_command.data.resize(3);
-    mode.data.resize(3);
+    motor_command.data.resize(5);
+    mode.data.resize(4);
 
     mode.data[1]=DEFAULT_SPEED;
     ros::Rate loop_rate(30);
@@ -226,41 +291,23 @@ int main(int argc, char** argv)
 
     while(ros::ok()){
 
-            switch (controlmode)
-            {
-            case Asynchronous:
-                Flipper_Asynchronous.publish(motor_command);
-                mode.data[0]=Asynchronous;
-                ROS_INFO("AAAAAAAAAAAAAAA");
-
-                
-                break;
-
-            case Synchronous:
-                Flipper_Synchronous.publish(motor_command);
-                mode.data[0]=Synchronous;
-                 ROS_INFO("SSSSSSSSSSSSSSSSSSSS");               
-
-
-                break;
-
-            case DynamixelArm:
-  
-                Dynamixel_Arm.publish(motor_command);
-                mode.data[0]=DynamixelArm;
-
-                break;            
             
-        /* default:
-            ROS_INFO("UNKO");
+            motor_command.data[4]=currentmode;
 
-                break;*/
-            }
+            
 
             
             mode.data[2]=speedmode;
             JSK_pub.publish(mode);
-            //ROS_INFO("mode data:%d",mode.data);
+            ROS_INFO("controlmode:%d",controlmode);
+            ROS_INFO("motor_command.data[3]:%d",motor_command.data[3]);
+            //ROS_INFO("lver:%lf",joy.l_stick_ver);
+            Flipper_Asynchronous.publish(motor_command);
+            Flipper_Synchronous.publish(motor_command);
+            Dynamixel_Arm.publish(motor_command);
+            Opencr_back_flipper.publish(motor_command);
+
+
 
             ros::spinOnce();
             loop_rate.sleep();
